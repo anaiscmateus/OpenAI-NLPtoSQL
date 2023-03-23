@@ -13,7 +13,7 @@ logging.basicConfig(format='%(asctime)s - %(message)s', level=logging.INFO)
 openai.api_key = os.environ.get('OPENAI_API_KEY')
 
 # Sales Dataset
-dataset = r"C:\Users\anais\Documents\Projects\OpenAI\OpenAI_NLP_to_SQL\OpenAI-NLPtoSQL\data\sales_data_sample.csv"
+dataset = r"YOURFILEPATH"
 
 if __name__ == '__main__':
     logging.info("Loading Data...")
