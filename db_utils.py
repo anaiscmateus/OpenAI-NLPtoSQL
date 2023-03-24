@@ -2,29 +2,54 @@ from sqlalchemy import create_engine
 from sqlalchemy import text
 
 def dataframe_to_database(df, table_name):
+    """
+This function takes a pandas dataframe and a table name as input and creates a temporary database in RAM and pushes the dataframe into the database.
 
-    # CONVERT PANDAS DATAFRAME TO A DATABASE
+Parameters:
+    df (pandas dataframe): The dataframe to be pushed into the database.
+    table_name (str): The name of the table to be created in the database.
 
-    # CREATE TEMPORARY DATABASE IN RAM
+Returns:
+    engine (sqlalchemy engine): The engine of the created database.
+     """
+
     engine = create_engine('sqlite:///:memory:', echo=False)
 
-    # PUSH PANDAS DATAFRAME --> TEMPORARY DATABASE
     df.to_sql(name = table_name, con = engine, index = False)
     return engine
 
-def handle_response(response):
 
-    # CLEAN UP THE RESPONSE TO GET THE SQL QUERY
+def execute_query(engine, query):
+    """
+This function executes a given SQL query on a given engine and returns the results.
+
+Parameters:
+engine (object): The engine to execute the query on.
+query (str): The SQL query to execute.
+
+Returns:
+list: A list of tuples containing the results of the query.
+
+    """
+
+    with engine.connect() as conn:
+        result = conn.execute(text(query))
+        return result.fetchall()
+
+
+def handle_response(response):
+    """
+ This function takes in a response from a user and cleans it up to get the SQL query.
+ 
+ Parameters:
+ response (dict): The response from the user.
+ 
+ Returns:
+ query (str): The SQL query.
+ 
+     """
 
     query = response['choices'][0]['text']
     if query.startswith(" "):
         query = "SELECT"+query
     return query
-
-def execute_query(engine, query):
-    
-    # ADD OPENAI SQL QUERY TO GET RESULTS
-
-    with engine.connect() as conn:
-        result = conn.execute(text(query))
-        return result.fetchall()
